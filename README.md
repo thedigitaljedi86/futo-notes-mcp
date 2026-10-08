@@ -17,17 +17,48 @@ server and actually decrypt/encrypt content, compatible with the real app.
   "Settings → Sync" for how to self-host one). This project is only a client for it.
 - Node.js >= 20.
 
-## Install
-
-```bash
-npm install
-npm run build
-```
-
-## Configure
+## Install & configure
 
 This server takes its config from environment variables — set them in your MCP client's
-server config (e.g. Claude Desktop's `mcpServers` block supports `env`):
+server config (e.g. Claude Desktop's `mcpServers` block supports `env`).
+
+### Option A: run straight from GitHub (no clone needed)
+
+`npx` fetches and builds the latest version from this repository on first run:
+
+```json
+{
+  "mcpServers": {
+    "futo-notes": {
+      "command": "npx",
+      "args": ["-y", "github:thedigitaljedi86/futo-notes-mcp"],
+      "env": {
+        "FUTO_NOTES_SERVER_URL": "http://futo-notes.local:3005",
+        "FUTO_NOTES_PASSWORD": "your-futo-notes-password"
+      }
+    }
+  }
+}
+```
+
+With Claude Code you can add it in one command instead:
+
+```bash
+claude mcp add \
+  --env FUTO_NOTES_SERVER_URL=http://futo-notes.local:3005 \
+  --env FUTO_NOTES_PASSWORD=your-futo-notes-password \
+  futo-notes -- npx -y github:thedigitaljedi86/futo-notes-mcp
+```
+
+### Option B: clone and build locally
+
+```bash
+git clone https://github.com/thedigitaljedi86/futo-notes-mcp.git
+cd futo-notes-mcp
+npm install   # also builds into dist/
+```
+
+Then point your MCP client at the built file:
 
 ```json
 {
@@ -43,6 +74,8 @@ server config (e.g. Claude Desktop's `mcpServers` block supports `env`):
   }
 }
 ```
+
+### Settings
 
 `FUTO_NOTES_PASSWORD` is the single password the FUTO Notes app itself asks for under
 Settings → Sync — it's used both to log in to the server and to unwrap the vault's
